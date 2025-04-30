@@ -1,16 +1,18 @@
 import numpy as np
 import concurrent.futures
-import multiprocessing as mp
+import time
+#import multiprocessing as mp
+
+start = time.perf_counter()
 
 #an array of numbers 0-99
-orig_array = np.arange(20)
-print("original array",'\n', orig_array)
-
-print("==============================================================================================================================================")
+orig_array = np.arange(100)
+#print("original array",'\n', orig_array)
 
 #split array into an array of arrays of 10
-array_chunks = ([orig_array[i*10:(i*10)+10] for i in range(0,2,1)])
-print("split arrays",'\n', array_chunks)
+array_chunks = ([orig_array[i*10:(i*10)+10] for i in range(0,10,1)])
+
+#print("split arrays",'\n', array_chunks)
 
 def summing_chunks(array_chunk):
     return sum(array_chunk)
@@ -18,16 +20,26 @@ def summing_chunks(array_chunk):
 
 def main():
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
+
+        chunk_sums = []
+
+        #this method does not work
+        #for array, sum in zip(array_chunks, executor.map(summing_chunks, array_chunks)):
+            #chunk_sums.append(sum)
+
         chunk_sums = list(executor.map(summing_chunks, array_chunks))
 
-    print("chunk_sums: ",'\n', chunk_sums)
+    #print("chunk_sums: ",'\n', chunk_sums)
 
-    array_of_sums = sum(chunk_sums)
-    print("total sum: ",'\n', array_of_sums)
+    total_sum = sum(chunk_sums)
+    print("total sum: ",'\n', total_sum)
 
 if __name__ == '__main__':
     main()
+
+finish = time.perf_counter()
+print(f'Finished in {round(finish-start, 2)} seconds(s)')
 
 
 #make an array for the sums of all the chunks
