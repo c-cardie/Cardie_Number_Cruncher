@@ -3,18 +3,68 @@ import concurrent.futures
 import multiprocessing as mp
 
 #an array of numbers 0-99
-orig_array = np.arange(100)
+orig_array = np.arange(20)
 print("original array",'\n', orig_array)
 
 print("==============================================================================================================================================")
 
 #split array into an array of arrays of 10
-array_chunks = ([orig_array[i*10:(i*10)+10] for i in range(0,100,1)])
+array_chunks = ([orig_array[i*10:(i*10)+10] for i in range(0,2,1)])
 print("split arrays",'\n', array_chunks)
 
 def summing_chunks(array_chunk):
     return sum(array_chunk)
 
+
+def main():
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
+        chunk_sums = list(executor.map(summing_chunks, array_chunks))
+
+    print("chunk_sums: ",'\n', chunk_sums)
+
+    array_of_sums = sum(chunk_sums)
+    print("total sum: ",'\n', array_of_sums)
+
+if __name__ == '__main__':
+    main()
+
+
+#make an array for the sums of all the chunks
+#array_of_sums = summing_chunks(array_chunks)
+
+
+#print("==============================================================================================================================================")
+
+#print("Array sums: ",'\n', array_of_sums)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 #Create a ThreadPoolExecutor:
     #Up to 5 worker threads can run at the same time
     #executor is the object we’ll use to submit tasks
@@ -36,8 +86,7 @@ print("=========================================================================
 
 print("chunk_sums",'\n', chunk_sums)
 
-#make an array for the sums of all the chunks
-array_of_sums = []
+
 
 #Go through the futures as they finish (not necessarily in the order we started them!)
     #as_completed() yields each future as soon as it’s done — perfect for seeing results immediately
@@ -53,4 +102,4 @@ for future in concurrent.futures.as_completed(chunk_sums):
 print("==============================================================================================================================================")
 
 print("sums of chunks",'\n', array_of_sums)
-
+'''
